@@ -171,7 +171,7 @@ jQuery.fn.excolor = function (C) {
     jQuery(aitem).clone().show().addClass('mds' + A).css('position', 'absolute').css('visibility', 'hidden').appendTo('body');
     setTimeout(function () {
       var a = jQuery('body > .mds' + A);
-      jQuery(aitem).parent().find('#' + A).css('width', (jQuery(a).outerHeight() - 2) + 'px');
+//      jQuery(aitem).parent().find('#' + A).css('width', (jQuery(a).outerHeight() - 2) + 'px');
       jQuery(a).remove()
     }, 300);
     isample = jQuery(aitem).parent().find('#' + A).mouseenter(function () {
@@ -672,25 +672,25 @@ jQuery.fn.excolor = function (C) {
       }).dblclick(function (e) {
         jQuery(ok_but).click()
       });
-      jQuery(sb_sel).mousedown(function (e) {
+      jQuery(sb_sel).on("mousedown touchstart", function (e) {
         pos_sel = jQuery(this).offset();
-        correct_x = e.pageX - pos_sel.left;
-        correct_y = e.pageY - pos_sel.top;
+        correct_x = (e.pageX || e.originalEvent.targetTouches[0].pageX) - pos_sel.left;
+        correct_y = (e.pageY || e.originalEvent.targetTouches[0].pageY) - pos_sel.top;
         j = this;
         jQuery(switcher).css('background', 'url(' + root_path + 'transp0.gif) 0 0 no-repeat');
         e.preventDefault()
       }).click(function (e) {});
-      jQuery(slider).mousedown(function (e) {
+      jQuery(slider).on("mousedown touchstart", function (e) {
         pos_slider = jQuery(this).offset();
-        correct_x = e.pageX - pos_slider.left;
-        correct_y = e.pageY - pos_slider.top;
+        correct_x = (e.pageX || e.originalEvent.targetTouches[0].pageX) - pos_slider.left;
+        correct_y = (e.pageY || e.originalEvent.targetTouches[0].pageY) - pos_slider.top;
         moved_slider = this;
         jQuery(switcher).css('background', 'url(' + root_path + 'transp0.gif) 0 0 no-repeat');
         e.preventDefault()
       });
-      jQuery(huebox).mousedown(function (e) {
-        if (e.pageY >= (pos_huebox.top + 5) && e.pageY <= ((pos_huebox.top + jQuery(huebox).height()) - 6)) {
-          hue = e.pageY - pos_huebox.top - 5;
+      jQuery(huebox).on("mousedown touchstart", function (e) {
+        if ((e.pageY || e.originalEvent.targetTouches[0].pageY) >= (pos_huebox.top + 5) && (e.pageY || e.originalEvent.targetTouches[0].pageY) <= ((pos_huebox.top + jQuery(huebox).height()) - 6)) {
+          hue = (e.pageY || e.originalEvent.targetTouches[0].pageY) - pos_huebox.top - 5;
           if (hue < 0) hue = 0;
           if (hue > 119) hue = 119;
           jQuery(switcher).css('background', 'url(' + root_path + 'transp0.gif) 0 0 no-repeat');
@@ -698,21 +698,21 @@ jQuery.fn.excolor = function (C) {
           init_colors();
           update_inputs();
           pos_slider = jQuery(slider).offset();
-          correct_x = e.pageX - pos_slider.left;
-          correct_y = e.pageY - pos_slider.top;
+          correct_x = (e.pageX || e.originalEvent.targetTouches[0].pageX) - pos_slider.left;
+          correct_y = (e.pageY || e.originalEvent.targetTouches[0].pageY) - pos_slider.top;
           moved_slider = slider;
           e.preventDefault()
         }
       });
-      jQuery(sbbox).mousedown(function (e) {
-        saturation = Math.round((e.pageX - pos_sbbox.left - 1) / 1.3);
+      jQuery(sbbox).on("mousedown touchstart", function (e) {
+        saturation = Math.round(((e.pageX || e.originalEvent.targetTouches[0].pageX) - pos_sbbox.left - 1) / 1.3);
         if (saturation > 100) {
           saturation = 100
         }
         if (saturation < 1) {
           saturation = 1
         }
-        brightness = -1 * (Math.round((e.pageY - pos_sbbox.top - 1) / 1.3) - 100);
+        brightness = -1 * (Math.round(((e.pageY || e.originalEvent.targetTouches[0].pageY) - pos_sbbox.top - 1) / 1.3) - 100);
         if (brightness > 100) {
           brightness = 100
         }
@@ -725,8 +725,8 @@ jQuery.fn.excolor = function (C) {
         update_inputs();
         j = sb_sel;
         pos_sel = jQuery(j).offset();
-        correct_x = e.pageX - pos_sel.left;
-        correct_y = e.pageY - pos_sel.top;
+        correct_x = (e.pageX || e.originalEvent.targetTouches[0].pageX) - pos_sel.left;
+        correct_y = (e.pageY || e.originalEvent.targetTouches[0].pageY) - pos_sel.top;
         e.preventDefault()
       });
       jQuery(wrapper).find('input.excolor_input').keypress(function (a) {
@@ -825,22 +825,22 @@ jQuery.fn.excolor = function (C) {
         jQuery(switcher).css('background', 'url(' + root_path + 'transp0.gif) 0 0 no-repeat')
       }
     };
-    jQuery(document).mouseup(function (e) {
+    jQuery(document).on("mouseup touchend", function (e) {
       j = 'mel';
       moved_slider = 'mel'
-    }).mousemove(function (e) {
+    }).on("mousemove touchmove", function (e) {
       if (j != 'mel') {
         e.preventDefault();
         var a = 0,
           tty = 0;
-        a = e.pageX - correct_x;
+        a = (e.pageX || e.originalEvent.targetTouches[0].pageX) - correct_x;
         if (a < (pos_sbbox.left - 4)) {
           a = pos_sbbox.left - 4
         }
         if (a > (pos_sbbox.left + 125)) {
           a = pos_sbbox.left + 125
         }
-        tty = e.pageY - correct_y;
+        tty = (e.pageY || e.originalEvent.targetTouches[0].pageY) - correct_y;
         if (tty < (pos_sbbox.top - 4)) {
           tty = pos_sbbox.top - 4
         }
@@ -861,7 +861,7 @@ jQuery.fn.excolor = function (C) {
       }
       if (moved_slider != 'mel') {
         e.preventDefault();
-        hue = e.pageY - pos_huebox.top - correct_y;
+        hue = (e.pageY || e.originalEvent.targetTouches[0].pageY) - pos_huebox.top - correct_y;
         if (hue < 0) {
           hue = 0
         }
